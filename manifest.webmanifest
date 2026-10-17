@@ -1,0 +1,17 @@
+{
+  "name": "Minha Central",
+  "short_name": "Minha Central",
+  "description": "Carreira de técnico no PES 2020 e organização do dia a dia, tudo offline.",
+  "start_url": "./minha-central.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#08130d",
+  "theme_color": "#0c1e14",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
