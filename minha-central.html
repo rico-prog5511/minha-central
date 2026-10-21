@@ -410,10 +410,12 @@ body.printing #print-root{display:block}
   .area-switch{width:100%}
   .area-switch button{flex:1}
 }
+.appsbar{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;padding:4px 8px;padding-top:calc(4px + env(safe-area-inset-top));background:var(--surface2,#15271f);border-bottom:1px solid var(--border,#244236);font-size:12.5px}.appsbar a{padding:3px 12px;border-radius:99px;color:var(--muted,#8fb3a1);text-decoration:none;white-space:nowrap}.appsbar a:hover{color:var(--text,#fff)}.appsbar a[aria-current=page]{background:var(--accent-soft,rgba(61,255,154,.14));color:var(--accent,#3dff9a);font-weight:700}@media print{.appsbar{display:none}}
 </style>
 </head>
 <body>
 <noscript>Este app precisa de JavaScript ativado para funcionar.</noscript>
+<nav class="appsbar" aria-label="Meus aplicativos"><a href="minha-central.html" aria-current="page">🏠 Minha Central</a><a href="piadas.html">😂 Piadas</a><a href="seguranca.html">🛡️ Segurança</a></nav>
 <header id="app-header" class="app-header"></header>
 <div id="notices"></div>
 <nav id="tabs" class="hidden" aria-label="Abas"></nav>
@@ -5231,7 +5233,7 @@ function openInstallModal() {
   const box = h('div', { class: 'stack' });
   const m = openModal({ title: '📲 Instalar no celular', body: box, size: 'wide' });
   const step = (n, t) => h('li', null, h('div', null, t));
-  box.append(
+  box.append(...[
     h('div', { class: 'note' }, isStandalone() ? '✅ Você já está usando o app instalado.' : hosted ? '🌐 Esta página está hospedada: dá para instalar como app.' : '📁 Você abriu o arquivo direto do computador/celular (file://). Para instalar como app é preciso hospedar os arquivos — veja a opção B.'),
     deferredInstall && !isStandalone() ? h('button', { class: 'btn primary', type: 'button', onclick: async () => { try { deferredInstall.prompt(); await deferredInstall.userChoice; } catch (e) {} deferredInstall = null; m.close(); } }, '📲 Instalar agora') : null,
     h('div', { class: 'card stack' }, h('h3', { style: { margin: 0 } }, 'Opção A — mais simples (sem hospedar)'),
@@ -5245,7 +5247,7 @@ function openInstallModal() {
         step(3, 'Android (Chrome): menu ⋮ → "Instalar app" (ou "Adicionar à tela inicial"). iPhone (Safari): botão Compartilhar → "Adicionar à Tela de Início".'),
         step(4, 'Abra uma vez com internet: depois disso o app funciona offline e atualiza sozinho quando você publicar uma versão nova.')),
       h('p', { class: 'muted small' }, 'Seus dados NÃO vão para a hospedagem: ficam só no aparelho que usa o app. Por isso, para levar os dados de um aparelho para outro, use 💾 Backup → exportar no computador e importar no celular (e vice-versa).')),
-    h('div', { class: 'modal-foot' }, h('button', { class: 'btn', type: 'button', onclick: () => m.close() }, 'Fechar')));
+    h('div', { class: 'modal-foot' }, h('button', { class: 'btn', type: 'button', onclick: () => m.close() }, 'Fechar'))].filter(Boolean));
 }
 
 /* =====================================================================

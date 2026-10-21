@@ -181,6 +181,11 @@ body.modal-open{overflow:hidden}
 .shake{animation:shake .35s}
 @keyframes shake{20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
 
+@media (max-width:480px){.header-actions .icon-btn .small{display:none}.header-actions{gap:6px}}
+.catedit{gap:4px;cursor:default;align-items:center}
+.cat-x{border:0;background:none;color:inherit;padding:0 4px;min-height:0;font-size:14px;cursor:pointer;opacity:.8}
+.cat-x:hover{opacity:1}
+.cat-x.danger{color:var(--danger)}
 /* ---------- Notas do dia a dia ---------- */
 .notas-grid{columns:260px;column-gap:12px}
 .nota{break-inside:avoid;margin:0 0 12px;display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
@@ -214,10 +219,12 @@ button.chip-btn{cursor:pointer;font:inherit;font-size:12px}
 .meter{height:12px;border-radius:99px;background:var(--surface2);overflow:hidden;border:1px solid var(--border)}
 .meter i{display:block;height:100%}
 .check-ok{color:#34d399} .check-warn{color:var(--warn)}
+.appsbar{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;padding:4px 8px;padding-top:calc(4px + env(safe-area-inset-top));background:var(--surface2,#15271f);border-bottom:1px solid var(--border,#244236);font-size:12.5px}.appsbar a{padding:3px 12px;border-radius:99px;color:var(--muted,#8fb3a1);text-decoration:none;white-space:nowrap}.appsbar a:hover{color:var(--text,#fff)}.appsbar a[aria-current=page]{background:var(--accent-soft,rgba(61,255,154,.14));color:var(--accent,#3dff9a);font-weight:700}@media print{.appsbar{display:none}}
 </style>
 </head>
 <body>
 <noscript>Este app precisa de JavaScript ativado para funcionar.</noscript>
+<nav class="appsbar" aria-label="Meus aplicativos"><a href="minha-central.html">🏠 Minha Central</a><a href="piadas.html" aria-current="page">😂 Piadas</a><a href="seguranca.html">🛡️ Segurança</a></nav>
 <header id="app-header" class="app-header"></header>
 <div id="notices"></div>
 <nav id="tabs" class="hidden" aria-label="Abas"></nav>
@@ -251,11 +258,11 @@ function mk(ns) {
     if (attrs) {
       for (const k in attrs) {
         const v = attrs[k];
-        if (v == null || v === false) continue;
+        if (v == null || (v === false && k.slice(0, 5) !== 'aria-')) continue;
         if (k === 'style' && typeof v === 'object') Object.assign(el.style, v);
         else if (k.slice(0, 2) === 'on' && typeof v === 'function') el.addEventListener(k.slice(2).toLowerCase(), v);
         else if (!ns && (k === 'value' || k === 'checked' || k === 'selected')) el[k] = v;
-        else el.setAttribute(k, v === true ? '' : String(v));
+        else el.setAttribute(k, v === true ? (k.slice(0, 5) === 'aria-' ? 'true' : '') : String(v));
       }
     }
     appendKids(el, kids);
@@ -864,13 +871,15 @@ function hbars(rows, color) {
 /* =====================================================================
    7. PIADAS: cadastro, filtros, cartões, versões, apresentações, compartilhar
    ===================================================================== */
-Object.assign(ui, { jk: { q: '', cat: '', sub: '', status: '', aud: '', sort: 'recentes', fav: false, hide: false }, jkOpen: {}, jkRevealed: {} });
+Object.assign(ui, { jk: { q: '', cat: '', cats: [], bold: [], sub: '', status: '', aud: '', sort: 'recentes', fav: false, hide: false }, jkOpen: {}, jkRevealed: {}, catEdit: false });
+/* categorias selecionadas no filtro (várias ao mesmo tempo); `cat` é só o formato antigo */
+function selectedCats(f = ui.jk) { return f.cats && f.cats.length ? f.cats : (f.cat ? [f.cat] : []); }
 
 /** Lista de piadas filtrada e ordenada conforme os filtros da tela */
 function filteredJokes(f = ui.jk) {
   const q = normText(f.q.trim());
   const list = state.jokes.filter(j =>
-    (!f.cat || j.categoryId === f.cat) && (!f.sub || j.sub === f.sub) && (!f.status || j.status === f.status) && (!f.aud || (j.audiences || []).includes(f.aud)) && (!f.fav || j.favorite) &&
+    (!selectedCats(f).length || selectedCats(f).includes(j.categoryId)) && (!(f.bold || []).length || f.bold.includes(j.boldness || 1)) && (!f.sub || j.sub === f.sub) && (!f.status || j.status === f.status) && (!f.aud || (j.audiences || []).includes(f.aud)) && (!f.fav || j.favorite) &&
     (!q || textMatch([j.title, j.setup, j.punch, j.tag, j.notes, j.sub, (j.tags || []).join(' ')].join(' '), f.q)));
   const by = {
     recentes: (a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''), antigas: (a, b) => (a.createdAt || '').localeCompare(b.createdAt || ''),
@@ -1100,6 +1109,30 @@ function jokeCard(j) {
   return card;
 }
 
+/* ---- categorias direto na barra do filtro: criar, editar e remover sem abrir outra janela ---- */
+const CAT_COLORS = [['#ffb703', 'Amarelo'], ['#fb8500', 'Laranja'], ['#ff4d6d', 'Vermelho'], ['#ff7aa8', 'Rosa'], ['#a78bfa', 'Roxo'], ['#4aa3ff', 'Azul'], ['#2dd4bf', 'Turquesa'], ['#3ddc84', 'Verde'], ['#c58b5a', 'Marrom'], ['#94a3b8', 'Cinza']];
+function catForm(id) {
+  const c = id ? getCat(id) : null;
+  formModal({ title: c ? 'Editar categoria' : 'Nova categoria', submitLabel: c ? 'Salvar' : 'Criar',
+    fields: [{ key: 'name', label: 'Nome', type: 'text', required: true, value: c ? c.name : '', maxlength: 30, width: 'w3' }, { key: 'emoji', label: 'Emoji', type: 'text', value: c ? c.emoji : '😄', maxlength: 4, width: 'w2' },
+      { key: 'color', label: 'Cor', type: 'select', value: c ? c.color : '#ffb703', width: 'w2', options: CAT_COLORS.map(([v, l]) => ({ value: v, label: l })) }],
+    onSubmit: v => {
+      if (state.categories.some(x => x.name.toLowerCase() === v.name.toLowerCase() && (!c || x.id !== c.id))) return 'Já existe uma categoria com esse nome.';
+      if (c) Object.assign(c, { name: v.name, emoji: v.emoji || '😄', color: v.color }); else state.categories.push({ id: uid(), name: v.name, emoji: v.emoji || '😄', color: v.color });
+      commit(); toast(c ? 'Categoria atualizada.' : 'Categoria criada.');
+    } });
+}
+async function catDelete(c) {
+  if (state.categories.length < 2) { toast('Mantenha pelo menos uma categoria.', 'err'); return; }
+  const n = state.jokes.filter(j => j.categoryId === c.id).length;
+  const ok = await confirmDialog({ title: 'Remover categoria?', message: n ? `As ${n} piadas de "${c.name}" vão para "Outras" (ou a primeira categoria disponível). Nenhuma piada é apagada.` : `"${c.name}" será removida.`, okLabel: 'Remover', danger: true });
+  if (!ok) return;
+  const fb = state.categories.find(x => x.id === 'c_out' && x.id !== c.id) || state.categories.find(x => x.id !== c.id);
+  state.jokes.forEach(j => { if (j.categoryId === c.id) j.categoryId = fb.id; });
+  state.categories = state.categories.filter(x => x.id !== c.id);
+  ui.jk.cats = (ui.jk.cats || []).filter(x => x !== c.id); if (ui.jk.cat === c.id) ui.jk.cat = ''; ui.jk.sub = '';
+  commit(); toast('Categoria removida.');
+}
 function renderJokes() {
   const f = ui.jk, wrap = h('div', { class: 'stack' });
   wrap.appendChild(h('div', { class: 'page-head' }, h('div', null, h('h1', null, 'Piadas'), h('p', { class: 'muted' }, `${plural(state.jokes.length, 'piada no caderno', 'piadas no caderno')}`)), h('div', { class: 'spacer' }),
@@ -1114,11 +1147,23 @@ function renderJokes() {
     const items = filteredJokes(); info.textContent = `${plural(items.length, 'piada', 'piadas')}${items.length !== state.jokes.length ? ` de ${state.jokes.length}` : ''}`;
     host.replaceChildren(...(items.length ? items.map(jokeCard) : [h('div', { class: 'card', style: { gridColumn: '1/-1' } }, h('p', { class: 'empty' }, 'Nenhuma piada com esses filtros.'))]));
   };
-  wrap.appendChild(h('div', { class: 'catbar' }, h('button', { class: 'btn sm' + (!f.cat ? ' on' : ''), type: 'button', onclick: () => { f.cat = ''; f.sub = ''; render(); } }, `Todas (${state.jokes.length})`),
-    state.categories.map(c => { const n = state.jokes.filter(j => j.categoryId === c.id).length; return n || f.cat === c.id ? h('button', { class: 'btn sm' + (f.cat === c.id ? ' on' : ''), type: 'button', onclick: () => { f.cat = f.cat === c.id ? '' : c.id; f.sub = ''; render(); } }, `${c.emoji} ${c.name} (${n})`) : null; })));
+  const sc = new Set(selectedCats(f)), editing = !!ui.catEdit;
+  wrap.appendChild(h('div', { class: 'catbar', role: 'group', 'aria-label': 'Categorias' }, h('button', { class: 'btn sm' + (!sc.size ? ' on' : ''), type: 'button', onclick: () => { f.cats = []; f.cat = ''; f.sub = ''; render(); } }, `Todas (${state.jokes.length})`),
+    state.categories.map(c => {
+      const n = state.jokes.filter(j => j.categoryId === c.id).length;
+      if (editing) return h('span', { class: 'btn sm catedit' }, `${c.emoji} ${c.name} (${n})`, h('button', { class: 'cat-x', type: 'button', title: 'Editar', 'aria-label': 'Editar ' + c.name, onclick: () => catForm(c.id) }, '✎'), h('button', { class: 'cat-x danger', type: 'button', title: 'Remover', 'aria-label': 'Remover ' + c.name, onclick: () => catDelete(c) }, '✕'));
+      return h('button', { class: 'btn sm' + (sc.has(c.id) ? ' on' : ''), type: 'button', 'aria-pressed': sc.has(c.id), title: 'Toque para somar ou tirar esta categoria do filtro', style: n ? null : { opacity: '.65' },
+        onclick: () => { const cur = new Set(selectedCats(f)); if (cur.has(c.id)) cur.delete(c.id); else cur.add(c.id); f.cats = [...cur]; f.cat = ''; f.sub = ''; render(); } }, `${c.emoji} ${c.name} (${n})`);
+    }),
+    h('button', { class: 'btn sm', type: 'button', onclick: () => catForm() }, '＋ Nova'),
+    h('button', { class: 'btn sm' + (editing ? ' on' : ''), type: 'button', onclick: () => { ui.catEdit = !ui.catEdit; render(); } }, editing ? '✔ Concluir' : '✎ Editar/remover')));
+  const bn = lvl => state.jokes.filter(j => (j.boldness || 1) === lvl).length;
+  wrap.appendChild(h('div', { class: 'catbar', role: 'group', 'aria-label': 'Nível de ousadia' }, h('span', { class: 'muted small', style: { alignSelf: 'center' } }, 'Ousadia:'),
+    BOLDNESS.map(([v, l]) => { const on = (f.bold || []).includes(v); return h('button', { class: 'btn sm' + (on ? ' on' : ''), type: 'button', 'aria-pressed': on, title: l, onclick: () => { const cur = new Set(f.bold || []); if (cur.has(v)) cur.delete(v); else cur.add(v); f.bold = [...cur]; render(); } }, `${l.split(' (')[0]} (${bn(v)})`); }),
+    (f.bold || []).length ? h('button', { class: 'btn sm ghost', type: 'button', onclick: () => { f.bold = []; render(); } }, 'limpar') : null));
   const q = h('input', { class: 'input', type: 'search', placeholder: '🔍 Buscar no caderno', 'aria-label': 'Buscar piada' }); q.value = f.q; q.addEventListener('input', () => { f.q = q.value; refresh(); });
   const sel = (opts, val, key, label) => { const s = h('select', { class: 'input', 'aria-label': label }, opts.map(o => h('option', { value: o[0] }, o[1]))); s.value = val; s.addEventListener('change', () => { f[key] = s.value; render(); }); return s; };
-  const subs = [...new Set(state.jokes.filter(j => !f.cat || j.categoryId === f.cat).map(j => j.sub).filter(Boolean))].sort();
+  const subs = [...new Set(state.jokes.filter(j => !sc.size || sc.has(j.categoryId)).map(j => j.sub).filter(Boolean))].sort();
   wrap.appendChild(h('div', { class: 'filters' }, q, subs.length ? sel([['', 'Todas as subcategorias'], ...subs.map(s => [s, s])], f.sub, 'sub', 'Subcategoria') : null,
     sel([['', 'Qualquer status'], ...STATUS], f.status, 'status', 'Status'), sel([['', 'Qualquer público'], ...AUDIENCES], f.aud, 'aud', 'Público'),
     sel([['recentes', 'Mais recentes'], ['antigas', 'Mais antigas'], ['nota', 'Melhor nota'], ['reacao', 'Melhor reação'], ['contadas', 'Mais contadas'], ['az', 'A–Z']], f.sort, 'sort', 'Ordenar')));
@@ -1591,7 +1636,7 @@ function renderHome() {
   const wrap = h('div', { class: 'stack' }), J = state.jokes, name = state.meta.name;
   wrap.appendChild(h('div', { class: 'page-head' }, h('div', null, h('h1', null, name ? `Fala, ${name}! 😄` : 'Bem-vindo de volta! 😄'), h('p', { class: 'muted' }, 'O que vamos aprontar hoje?')), h('div', { class: 'spacer' })));
   wrap.appendChild(h('div', { class: 'row' }, h('button', { class: 'btn primary', type: 'button', onclick: () => openJokeForm() }, '＋ Nova piada'), h('button', { class: 'btn', type: 'button', onclick: () => go('ideias') }, '💡 Anotar ideia'), h('button', { class: 'btn', type: 'button', onclick: () => go('notas') }, '📝 Nota do dia'),
-    h('button', { class: 'btn', type: 'button', onclick: () => { if (!J.length) { toast('Cadastre uma piada primeiro.', 'err'); return; } const j = pick(J); ui.jk = { ...ui.jk, q: '', cat: '', sub: '', status: '', aud: '', fav: false }; ui.jkOpen[j.id] = false; openStageMode([j.id], 'Piada sorteada'); } }, '🎲 Sortear e contar'),
+    h('button', { class: 'btn', type: 'button', onclick: () => { if (!J.length) { toast('Cadastre uma piada primeiro.', 'err'); return; } const j = pick(J); ui.jk = { ...ui.jk, q: '', cat: '', cats: [], bold: [], sub: '', status: '', aud: '', fav: false }; ui.jkOpen[j.id] = false; openStageMode([j.id], 'Piada sorteada'); } }, '🎲 Sortear e contar'),
     h('button', { class: 'btn', type: 'button', onclick: () => { ui.st.sub = 'situacao'; go('palco'); } }, '🎯 Piada para a situação')));
   const s = dailyStreak(), c = dailyChallenge();
   wrap.appendChild(h('div', { class: 'grid stats' }, statBox(J.length, 'Piadas no caderno'), statBox(J.filter(j => j.status === 'aprovada').length, 'Aprovadas'), statBox(state.ideas.filter(i => !i.done).length, 'Ideias em aberto'), statBox(`${s.cur} 🔥`, 'Sequência do desafio')));
