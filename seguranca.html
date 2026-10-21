@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark" data-skin="terminal">
+<html lang="pt-BR" data-theme="dark" data-skin="cofre" data-layout="rail">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark light">
-<meta name="theme-color" content="#0b1511">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b1511'/%3E%3Ctext x='32' y='46' font-size='38' text-anchor='middle'%3E%F0%9F%9B%A1%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#171819">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23101112'/%3E%3Ctext x='32' y='46' font-size='38' text-anchor='middle'%3E%F0%9F%9B%A1%EF%B8%8F%3C/text%3E%3C/svg%3E">
 <title>Escola de Segurança</title>
 <style>
 /* =====================================================================
@@ -319,6 +319,62 @@ button.pk-row:hover{background:var(--surface2)}
 @media (max-width:560px){.pk-field{grid-template-columns:1fr}.pk-field .pk-w{grid-column:1}}
 .pk-hex{font-size:12px;white-space:pre;overflow-x:auto;word-break:normal}
 .appsbar{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;padding:4px 8px;padding-top:calc(4px + env(safe-area-inset-top));background:var(--surface2,#15271f);border-bottom:1px solid var(--border,#244236);font-size:12.5px}.appsbar a{padding:3px 12px;border-radius:99px;color:var(--muted,#8fb3a1);text-decoration:none;white-space:nowrap}.appsbar a:hover{color:var(--text,#fff)}.appsbar a[aria-current=page]{background:var(--accent-soft,rgba(61,255,154,.14));color:var(--accent,#3dff9a);font-weight:700}@media print{.appsbar{display:none}}
+/* =====================================================================
+   IDENTIDADE VISUAL — Escola de Segurança (layout "rail": menu lateral no computador, barra inferior no celular)
+   O visual "Cofre" (grafite + amarelo de segurança) é o padrão; os outros visuais continuam valendo sobre o mesmo layout.
+   ===================================================================== */
+html[data-layout="rail"]{--rail:240px}
+html[data-layout="rail"] .tab{display:flex;align-items:center}
+html[data-layout="rail"] .tab .tab-i{font-size:18px;line-height:1;flex:0 0 auto}
+html[data-layout="rail"] .tab .tab-t{min-width:0}
+html[data-layout="rail"][data-tabs] .tabs{max-width:none;margin:0;padding:0;gap:0}
+html[data-layout="rail"][data-tabs] .tab{border-radius:0;border:0;background:none;box-shadow:none;color:var(--muted);font-weight:700;white-space:nowrap}
+html[data-layout="rail"][data-tabs] .tab:hover{color:var(--text)}
+@media (min-width:980px){
+  html[data-layout="rail"] body{display:grid;grid-template-columns:var(--rail) minmax(0,1fr);align-items:start}
+  html[data-layout="rail"] body:has(#tabs.hidden){display:block}
+  html[data-layout="rail"] .appsbar,html[data-layout="rail"] .app-header,html[data-layout="rail"] #modal-root,html[data-layout="rail"] #toast-root,html[data-layout="rail"] #lock{grid-column:1/-1}
+  html[data-layout="rail"] .app-header{position:relative}
+  html[data-layout="rail"] .header-inner{max-width:none;padding-left:22px;padding-right:22px}
+  html[data-layout="rail"] #notices{grid-column:2;min-width:0}
+  html[data-layout="rail"] main{grid-column:2;min-width:0;width:100%;max-width:1160px;margin:0 auto}
+  html[data-layout="rail"] #tabs{grid-column:1;grid-row:3/span 2;position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;overflow-x:hidden;flex-direction:column;background:var(--header);border-right:1px solid var(--border);padding:14px 0 28px;scrollbar-width:thin}
+  html[data-layout="rail"][data-tabs] .tab{width:100%;gap:13px;padding:13px 20px;border-left:4px solid transparent;text-align:left;font-size:13.5px;letter-spacing:.07em;text-transform:uppercase;font-family:var(--font-head)}
+  html[data-layout="rail"][data-tabs] .tab:hover{background:var(--surface2);border-left-color:var(--accent)}
+  html[data-layout="rail"][data-tabs] .tab.active{background:var(--accent);color:var(--accent-ink);border-left-color:var(--accent);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 50%,calc(100% - 14px) 100%,0 100%)}
+}
+@media (max-width:979.98px){
+  html[data-layout="rail"] .header-inner{gap:8px;padding:8px 12px}
+  html[data-layout="rail"] .icon-btn .small{display:none}
+  html[data-layout="rail"] #tabs:not(.hidden){position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;overflow-x:auto;background:var(--header);border-top:3px solid var(--accent);padding:0 4px env(safe-area-inset-bottom);box-shadow:0 -8px 22px rgba(0,0,0,.35)}
+  html[data-layout="rail"][data-tabs] .tab{flex:1 0 66px;flex-direction:column;justify-content:center;gap:3px;padding:7px 6px 6px;min-height:56px;font-size:10px;line-height:1.15;letter-spacing:.05em;text-transform:uppercase}
+  html[data-layout="rail"][data-tabs] .tab .tab-i{font-size:19px}
+  html[data-layout="rail"][data-tabs] .tab.active{color:var(--accent);box-shadow:inset 0 3px 0 var(--accent)}
+  html[data-layout="rail"] main{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+}
+/* ----- visual "Cofre" ----- */
+html[data-skin="cofre"][data-theme]{--body-img:radial-gradient(color-mix(in srgb,var(--text) 8%,transparent) 1px,transparent 1.3px)}
+html[data-skin="cofre"] body{background-size:22px 22px}
+html[data-skin="cofre"] .app-header{border-bottom:0}
+html[data-skin="cofre"] .app-header::after{content:"";display:block;height:7px;background:repeating-linear-gradient(-45deg,#ffd400 0 12px,#161616 12px 24px)}
+html[data-skin="cofre"] .logo{border-radius:0;clip-path:polygon(0 0,100% 0,100% calc(100% - 9px),calc(100% - 9px) 100%,0 100%)}
+html[data-skin="cofre"] .brand span{font-family:var(--font-head);text-transform:uppercase;letter-spacing:.14em;font-size:15px}
+html[data-skin="cofre"] .icon-btn{border-width:2px}
+html[data-skin="cofre"] .xpbar,html[data-skin="cofre"] .pbar,html[data-skin="cofre"] .pbar i,html[data-skin="cofre"] .xpbar i{border-radius:0}
+html[data-skin="cofre"] .card,html[data-skin="cofre"] .stat{background:linear-gradient(var(--accent),var(--accent)) right 0 top 0/18px 3px no-repeat,linear-gradient(var(--accent),var(--accent)) right 0 top 0/3px 18px no-repeat,var(--surface)}
+html[data-skin="cofre"] .stat .v{font-family:var(--font-head);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+html[data-skin="cofre"] .page-head h1::after{content:"";display:block;width:84px;height:7px;margin-top:9px;background:repeating-linear-gradient(-45deg,var(--accent) 0 7px,transparent 7px 14px)}
+html[data-skin="cofre"] .card h3,html[data-skin="cofre"] .level-head h2{font-family:var(--font-head);text-transform:uppercase;letter-spacing:.06em}
+html[data-skin="cofre"] .btn{border-width:2px;font-weight:700;letter-spacing:.02em}
+html[data-skin="cofre"] .btn.primary,html[data-skin="cofre"] .btn.on{box-shadow:3px 3px 0 rgba(0,0,0,.55)}
+html[data-skin="cofre"] .btn:hover{transform:translate(-1px,-1px)}
+html[data-skin="cofre"] .btn:active{transform:translate(2px,2px);box-shadow:none}
+html[data-skin="cofre"] .chip{border-radius:0;text-transform:uppercase;letter-spacing:.06em;font-size:10.5px;font-weight:700;padding:2px 8px}
+html[data-skin="cofre"] .seg,html[data-skin="cofre"] .seg button,html[data-skin="cofre"] .catbar .btn{border-radius:0}
+html[data-skin="cofre"] .seg{border-width:2px}
+html[data-skin="cofre"] .seg button{text-transform:uppercase;letter-spacing:.05em;font-size:12.5px;font-weight:700}
+html[data-skin="cofre"] .note,html[data-skin="cofre"] .explain{border-left:5px solid var(--accent)}
+html[data-skin="cofre"] .modal{border:2px solid var(--accent);box-shadow:8px 8px 0 rgba(0,0,0,.55)}
 </style>
 </head>
 <body>
@@ -428,7 +484,7 @@ const XP_LEVELS = [[0, 'Novato'], [100, 'Curioso'], [300, 'Aprendiz'], [700, 'An
 function defaultState() {
   return {
     version: SCHEMA_VERSION,
-    meta: { createdAt: new Date().toISOString(), lastBackup: null, theme: 'dark', skin: 'terminal', accent: '', autoBackup: true, name: '', welcomeDismissed: false,
+    meta: { createdAt: new Date().toISOString(), lastBackup: null, theme: 'dark', skin: 'cofre', look: 'v2', accent: '', autoBackup: true, name: '', welcomeDismissed: false,
       pinHash: '', pinSalt: '', pinLen: 4, lockOnHide: false, nav: { tab: 'inicio' }, newPerDay: 10, xp: 0 },
     lessons: {},            // idAula -> {done,date,best (melhor % no quiz da aula),practice:[bool]}
     cards: {},              // idCartão -> {ef,reps,interval,due,lapses,last}  (repetição espaçada)
@@ -471,7 +527,10 @@ function loadState() {
     if (!isObj(d)) throw new Error('formato');
     if ((Number(d.version) || 0) > SCHEMA_VERSION) { storageStatus.tooNew = true; return fillDefaults(d, defaultState()); }
     if ((Number(d.version) || 0) < SCHEMA_VERSION) { try { localStorage.setItem(PREV_KEY, raw); } catch (e) {} d = migrate(d); }
-    return fillDefaults(d, defaultState());
+    const oldLook = !d.meta || d.meta.look !== 'v2';      // 1ª abertura com o visual novo: quem ainda usava o visual original passa para o Cofre
+    d = fillDefaults(d, defaultState());
+    if (oldLook) { if (d.meta.skin === 'terminal') d.meta.skin = 'cofre'; d.meta.look = 'v2'; }
+    return d;
   } catch (e) {
     storageStatus.corrupt = true;
     try { localStorage.setItem(STORAGE_KEY + ':corrompido', raw); } catch (e2) {}
@@ -641,7 +700,9 @@ function formModal({ title, fields, submitLabel = 'Salvar', cancelLabel = 'Cance
    ===================================================================== */
 const P = (bg, header, surface, surface2, border, text, muted, accent, ink) => ({ bg, header, surface, surface2, border, text, muted, accent, ink });
 const SKINS = {
-  terminal: { name: 'Terminal', desc: 'Preto com verde-néon, estilo console de hacker — o visual padrão.', radius: 14, radiusSm: 10, tabs: 'underline', glow: true, headerGrad: true, bodyGlow: true, shadow: { dark: '0 8px 28px rgba(0,0,0,.55)', light: '0 6px 20px rgba(20,100,60,.14)' },
+  cofre: { name: 'Cofre', desc: 'Grafite com amarelo de segurança e faixas de alerta: industrial, firme e direto — o visual padrão.', radius: 2, radiusSm: 2, tabs: 'underline', headTT: 'uppercase', headLS: '.04em', fontHead: 'Bahnschrift,"DIN Alternate","Arial Narrow","Roboto Condensed",system-ui,sans-serif', shadow: { dark: '4px 4px 0 rgba(0,0,0,.55)', light: '4px 4px 0 rgba(30,30,10,.16)' },
+    dark: P('#0f1011', '#171819', '#1c1e1f', '#26282a', '#3d4043', '#f1f0ea', '#a5a69d', '#ffd400', '#151300'), light: P('#e9e8e1', '#f7f6f0', '#fbfaf5', '#dddcd3', '#b9b8ad', '#151513', '#5d5d54', '#8f6a00', '#ffffff') },
+  terminal: { name: 'Terminal', desc: 'Preto com verde-néon, estilo console de hacker.', radius: 14, radiusSm: 10, tabs: 'underline', glow: true, headerGrad: true, bodyGlow: true, shadow: { dark: '0 8px 28px rgba(0,0,0,.55)', light: '0 6px 20px rgba(20,100,60,.14)' },
     dark: P('#070d0a', '#0b1511', '#0f1b16', '#15271f', '#244236', '#e3f4ea', '#8fb3a1', '#3dff9a', '#022414'), light: P('#eef7f1', '#ffffff', '#ffffff', '#e3f1e8', '#bcd9c7', '#0d2418', '#4f7560', '#0b7a43', '#ffffff') },
   ciano: { name: 'Azul Ciber', desc: 'Azul-noite com ciano elétrico: clima de centro de operações.', radius: 14, radiusSm: 10, tabs: 'pills', headerGrad: true, bodyGlow: true, shadow: { dark: '0 8px 28px rgba(0,5,20,.55)', light: '0 6px 20px rgba(20,90,140,.14)' },
     dark: P('#060c14', '#0a1420', '#0e1b2b', '#142a42', '#1f4468', '#e4f1ff', '#8fb0d0', '#22d3ee', '#00232b'), light: P('#eef6fc', '#ffffff', '#ffffff', '#e1eef9', '#bcd6ec', '#0b2236', '#4d7490', '#0a6f94', '#ffffff') },
@@ -658,7 +719,7 @@ const SKINS = {
   mono: { name: 'Minimal P&B', desc: 'Preto e branco, sóbrio.', radius: 4, radiusSm: 3, tabs: 'underline', headTT: 'uppercase', headLS: '1.5px', shadow: { dark: 'none', light: 'none' },
     dark: P('#0a0a0a', '#0a0a0a', '#111111', '#1a1a1a', '#2c2c2c', '#f5f5f5', '#9a9a9a', '#ffffff', '#0a0a0a'), light: P('#fafafa', '#ffffff', '#ffffff', '#f0f0f0', '#dcdcdc', '#111111', '#666666', '#111111', '#ffffff') }
 };
-const SKIN_ORDER = ['terminal', 'ciano', 'roxo', 'alerta', 'ambar', 'caderno', 'neon', 'mono'];
+const SKIN_ORDER = ['cofre', 'terminal', 'ciano', 'roxo', 'alerta', 'ambar', 'caderno', 'neon', 'mono'];
 const hexRgb = hex => { const n = parseInt(hex.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
 const lumOf = hex => { const [r, g, b] = hexRgb(hex).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 const contrast = (a, b) => { const x = lumOf(a), y = lumOf(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
@@ -667,7 +728,7 @@ const validHex = s => /^#[0-9a-fA-F]{6}$/.test(s || '');
 const lightMQ = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
 function isLight() { const t = state.meta.theme; return t === 'light' || (t === 'auto' && !!(lightMQ && lightMQ.matches)); }
 function skinCss(id, custom) {
-  const s = SKINS[id] || SKINS.terminal;
+  const s = SKINS[id] || SKINS.cofre;
   let css = `:root{--radius:${s.radius}px;--radius-sm:${s.radiusSm}px;--font-head:${s.fontHead || 'var(--font)'};--head-tt:${s.headTT || 'none'};--head-ls:${s.headLS || '0'}}\n`;
   ['dark', 'light'].forEach(m => {
     const p = s[m], hdr = s.headerGrad ? 'linear-gradient(90deg,color-mix(in srgb,var(--accent) 14%,transparent),transparent 65%)' : 'none';
@@ -678,7 +739,7 @@ function skinCss(id, custom) {
   return css;
 }
 function applyTheme() {
-  const id = SKINS[state.meta.skin] ? state.meta.skin : 'terminal', root = document.documentElement;
+  const id = SKINS[state.meta.skin] ? state.meta.skin : 'cofre', root = document.documentElement;
   root.dataset.theme = isLight() ? 'light' : 'dark'; root.dataset.skin = id; root.dataset.tabs = SKINS[id].tabs || 'underline';
   const mt = document.querySelector('meta[name="theme-color"]'); if (mt) mt.setAttribute('content', SKINS[id][isLight() ? 'light' : 'dark'].header);
   let el = document.getElementById('skin-style');
@@ -703,7 +764,7 @@ function openAppearanceModal() {
   const box = h('div', { class: 'stack' });
   const colorIn = h('input', { type: 'color', 'aria-label': 'Cor de destaque personalizada' });
   const draw = () => {
-    const cur = SKINS[state.meta.skin] ? state.meta.skin : 'terminal';
+    const cur = SKINS[state.meta.skin] ? state.meta.skin : 'cofre';
     colorIn.value = validHex(state.meta.accent) ? state.meta.accent : SKINS[cur][isLight() ? 'light' : 'dark'].accent;
     box.replaceChildren(
       h('div', { class: 'row' }, h('span', { class: 'muted' }, 'Modo:'), themeSeg(draw), h('span', { class: 'muted small' }, '"Automático" segue o claro/escuro do aparelho.')),
@@ -955,7 +1016,7 @@ function renderTabs() {
   if (!state.meta.welcomeDismissed) { nav.classList.add('hidden'); return; }
   nav.classList.remove('hidden'); nav.className = 'tabs';
   const cur = currentTab();
-  nav.replaceChildren(...TABS.map(t => h('button', { type: 'button', class: 'tab' + (t.id === cur.id ? ' active' : ''), onclick: () => go(t.id) }, t.icon + ' ' + t.label)));
+  nav.replaceChildren(...TABS.map(t => h('button', { type: 'button', class: 'tab' + (t.id === cur.id ? ' active' : ''), onclick: () => go(t.id) }, h('span', { class: 'tab-i', 'aria-hidden': 'true' }, t.icon), h('span', { class: 'tab-t' }, t.label))));
 }
 function renderView() {
   const view = $('#view'); view.replaceChildren();
@@ -6765,12 +6826,12 @@ function portfolioHtmlBody(M) {
 const portfolioHtmlFile = M => `<!doctype html>\n<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escHtml(M.name || 'Portfólio de segurança')}</title><style>body{margin:0;padding:28px;background:#fff}@media print{body{padding:0}}${portCss('.wrap')}</style></head><body>${portfolioHtmlBody(M)}</body></html>\n`;
 
 /* ---------- certificado ---------- */
-const CERT_CSS = `.cert{box-sizing:border-box;width:100%;aspect-ratio:297/210;background:#fffdf7;color:#10231a;border:10px double #0a8f55;padding:5% 6%;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;font-family:Georgia,"Times New Roman",serif;container-type:inline-size}.cert *{box-sizing:border-box}.cert .c-top{font:700 3.4cqw/1 system-ui,sans-serif;letter-spacing:.35em;color:#0a8f55;text-transform:uppercase}.cert h1{margin:0;font-size:7.6cqw;line-height:1.05;font-weight:700}.cert .c-lbl{font-size:2.5cqw;color:#4d6a5b}.cert .c-blk{width:100%}.cert .c-name{display:inline-block;font-size:6.6cqw;font-style:italic;border-bottom:2px solid #0a8f55;padding:0 4cqw .6cqw;max-width:92%;overflow-wrap:anywhere}.cert .c-track{font-size:4.1cqw;font-weight:700}.cert .c-sum{font-size:2.5cqw;color:#2e473a;max-width:88%}.cert .c-foot{display:flex;justify-content:space-between;width:100%;font:2.1cqw/1.35 system-ui,sans-serif;color:#4d6a5b;gap:3cqw;text-align:left}.cert .c-foot b{color:#10231a}.cert .c-fine{font:1.8cqw/1.3 system-ui,sans-serif;color:#6b8577;max-width:92%}`;
+const CERT_CSS = `.cert{box-sizing:border-box;width:100%;aspect-ratio:297/210;background:#fffdf7;color:#10231a;border:10px double #0a8f55;padding:5% 6%;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;font-family:Georgia,"Times New Roman",serif;container-type:inline-size}.cert *{box-sizing:border-box}.cert .c-top{font:700 3.4cqw/1 system-ui,sans-serif;letter-spacing:.35em;color:#0a8f55;text-transform:uppercase}.cert h1{margin:0;font-size:7.6cqw;line-height:1.05;font-weight:700}.cert .c-lbl{font-size:2.5cqw;color:#4d6a5b}.cert .c-blk{width:100%}.cert .c-name{display:inline-block;font-size:6.6cqw;font-style:italic;border-bottom:2px solid #0a8f55;padding:0 4cqw .6cqw;max-width:92%;overflow-wrap:anywhere}.cert .c-name.lg{font-size:4.6cqw}.cert .c-name.xl{font-size:3.5cqw}.cert .c-track{font-size:4.1cqw;font-weight:700}.cert .c-sum{font-size:2.5cqw;color:#2e473a;max-width:88%}.cert .c-foot{display:flex;justify-content:space-between;width:100%;font:2.1cqw/1.35 system-ui,sans-serif;color:#4d6a5b;gap:3cqw;text-align:left}.cert .c-foot b{color:#10231a}.cert .c-fine{font:1.8cqw/1.3 system-ui,sans-serif;color:#6b8577;max-width:92%}`;
 function certNode(c) {
   const t = TRACKS.find(x => x.id === c.trackId);
   return h('div', { class: 'cert' },
     h('div', { class: 'c-top' }, 'Escola de Segurança'), h('h1', null, 'Certificado de Conclusão'),
-    h('div', { class: 'c-blk' }, h('div', { class: 'c-lbl' }, 'Certificamos que'), h('div', { class: 'c-name' }, c.name)),
+    h('div', { class: 'c-blk' }, h('div', { class: 'c-lbl' }, 'Certificamos que'), h('div', { class: 'c-name' + (c.name.length > 45 ? ' xl' : c.name.length > 28 ? ' lg' : '') }, c.name)),
     h('div', { class: 'c-blk' }, h('div', { class: 'c-lbl' }, 'concluiu o roteiro de estudos'), h('div', { class: 'c-track' }, `${t ? t.icon + ' ' : ''}${c.track}`)),
     h('div', { class: 'c-sum' }, `${c.steps} atividades cumpridas (aulas, desafios, missões no terminal, análise de pacotes e tarefas práticas), com cerca de ${c.hours} h de estudo estimado.`),
     h('div', { class: 'c-foot' }, h('div', null, 'Emitido em ', h('b', null, fmtDate(c.date))), h('div', { style: { textAlign: 'center' } }, 'Código de verificação', h('br'), h('b', null, certCode(c))), h('div', { style: { textAlign: 'right' } }, 'Nível atual: ', h('b', null, c.level || '—'))),

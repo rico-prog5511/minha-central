@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="dark" data-area="ml">
+<html lang="pt-BR" data-theme="dark" data-area="ml" data-layout="dock">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Minha Central">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c1e14'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%233ddc84'/%3E%3Ctext x='32' y='42' font-family='Arial' font-size='28' font-weight='900' text-anchor='middle' fill='%2305210f'%3EM%3C/text%3E%3C/svg%3E"><title>Minha Central</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a1130'/%3E%3Ccircle cx='32' cy='32' r='22' fill='%23c8ff2e'/%3E%3Ctext x='32' y='42' font-family='Arial' font-size='28' font-weight='900' text-anchor='middle' fill='%23142000'%3EM%3C/text%3E%3C/svg%3E"><title>Minha Central</title>
 <style>
 /* =====================================================================
    ESTILOS — variáveis de tema (4 combinações: tema × área)
@@ -411,6 +411,54 @@ body.printing #print-root{display:block}
   .area-switch button{flex:1}
 }
 .appsbar{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;padding:4px 8px;padding-top:calc(4px + env(safe-area-inset-top));background:var(--surface2,#15271f);border-bottom:1px solid var(--border,#244236);font-size:12.5px}.appsbar a{padding:3px 12px;border-radius:99px;color:var(--muted,#8fb3a1);text-decoration:none;white-space:nowrap}.appsbar a:hover{color:var(--text,#fff)}.appsbar a[aria-current=page]{background:var(--accent-soft,rgba(61,255,154,.14));color:var(--accent,#3dff9a);font-weight:700}@media print{.appsbar{display:none}}
+/* =====================================================================
+   IDENTIDADE VISUAL — Minha Central (layout "dock": placar no topo e barra de abas flutuante)
+   ===================================================================== */
+html[data-layout="dock"] .app-header{border-bottom:3px solid var(--accent);background-image:var(--header-img,none)}
+@media (min-width:641px){html[data-layout="dock"] .app-header{background-image:linear-gradient(100deg,transparent 0 62%,color-mix(in srgb,var(--accent) 9%,transparent) 62% 100%),var(--header-img,none)}}
+html[data-layout="dock"] .header-inner{max-width:1240px;padding:11px 18px}
+html[data-layout="dock"] .logo{width:40px;height:34px;border-radius:2px;transform:skewX(-12deg);font-style:italic;font-weight:900;font-size:21px}
+html[data-layout="dock"] .brand span{font-family:var(--font-head);font-style:italic;font-weight:900;text-transform:uppercase;letter-spacing:.07em;font-size:19px}
+html[data-layout="dock"] .area-switch{background:none;border:0;padding:0;gap:6px}
+html[data-layout="dock"] .area-switch button{transform:skewX(-12deg);border-radius:2px;border:1px solid var(--border);background:var(--surface2);padding:8px 18px;font-family:var(--font-head);font-weight:800;font-style:italic;text-transform:uppercase;letter-spacing:.05em;font-size:13px}
+html[data-layout="dock"] .area-switch button:hover{border-color:var(--accent);color:var(--text)}
+html[data-layout="dock"] .area-switch button.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 30%,transparent)}
+html[data-layout="dock"] .icon-btn{border-radius:2px 10px 2px 10px}
+/* dock flutuante */
+html[data-layout="dock"] #tabs:not(.hidden){position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;display:flex;gap:4px;width:max-content;max-width:calc(100vw - 20px);overflow-x:auto;padding:6px;margin:0;background:color-mix(in srgb,var(--header) 90%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid color-mix(in srgb,var(--accent) 38%,var(--border));border-radius:22px 6px 22px 6px;box-shadow:0 16px 40px rgba(0,0,0,.5)}
+html[data-layout="dock"][data-tabs] .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;flex:0 0 auto;min-width:70px;min-height:0;padding:8px 10px 7px;border:0;border-radius:14px 4px 14px 4px;background:none;box-shadow:none;color:var(--muted);font-family:var(--font-head);font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+html[data-layout="dock"] .tab .tab-i{font-size:21px;line-height:1.1}
+html[data-layout="dock"][data-tabs] .tab:hover{background:var(--surface2);color:var(--text)}
+html[data-layout="dock"][data-tabs] .tab.active{background:var(--accent);color:var(--accent-ink);box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 38%,transparent)}
+html[data-layout="dock"] .tab .soon{margin-left:0}
+html[data-layout="dock"] main{max-width:1240px;padding-bottom:calc(124px + env(safe-area-inset-bottom))}
+html[data-layout="dock"] .notice{max-width:1240px}
+/* lâminas de placar */
+html[data-skin="transmissao"] body{background-image:radial-gradient(1200px 520px at 82% -12%,color-mix(in srgb,var(--accent) 11%,transparent),transparent),repeating-linear-gradient(105deg,color-mix(in srgb,var(--text) 3%,transparent) 0 70px,transparent 70px 140px);background-attachment:fixed}
+html[data-skin="transmissao"] :is(.card,.stat){border-top:3px solid var(--accent);border-radius:2px 18px 2px 18px;background:linear-gradient(165deg,color-mix(in srgb,var(--accent) 6%,var(--surface)),var(--surface) 58%)}
+html[data-skin="transmissao"] .stat .v{font-family:var(--font-head);font-style:italic;font-weight:900;font-size:30px;font-variant-numeric:tabular-nums}
+html[data-skin="transmissao"] .stat .l{font-family:var(--font-head);font-weight:700;letter-spacing:.1em}
+html[data-skin="transmissao"] .page-head h1{font-style:italic;font-weight:900;letter-spacing:.03em}
+html[data-skin="transmissao"] .page-head h1::before{content:"";display:inline-block;width:12px;height:.82em;margin-right:12px;background:var(--accent);transform:skewX(-16deg);vertical-align:-.03em}
+html[data-skin="transmissao"] .card h3{font-family:var(--font-head);text-transform:uppercase;letter-spacing:.08em;font-size:14px}
+html[data-skin="transmissao"] .card h3::before{content:"";display:inline-block;width:7px;height:.95em;margin-right:9px;background:var(--accent);transform:skewX(-16deg);vertical-align:-.1em}
+html[data-skin="transmissao"] .btn{border-radius:2px 10px 2px 10px;font-family:var(--font-head);text-transform:uppercase;letter-spacing:.06em;font-size:12.5px;font-weight:800}
+html[data-skin="transmissao"] .btn.primary,html[data-skin="transmissao"] .btn.on{box-shadow:0 4px 0 color-mix(in srgb,var(--accent) 50%,#000)}
+html[data-skin="transmissao"] .btn.primary:active{transform:translateY(3px);box-shadow:none}
+html[data-skin="transmissao"] .chip{border-radius:2px 8px 2px 8px;text-transform:uppercase;letter-spacing:.05em;font-size:10.5px;font-weight:800}
+html[data-skin="transmissao"] .seg,html[data-skin="transmissao"] .seg button{border-radius:2px}
+html[data-skin="transmissao"] :is(.fld input[type=text],.fld input[type=number],.fld input[type=date],.fld input[type=time],.fld select,.fld textarea,.input){border-radius:2px 8px 2px 8px;border-bottom:2px solid color-mix(in srgb,var(--accent) 55%,var(--border))}
+html[data-skin="transmissao"] .modal{border-top:4px solid var(--accent);border-radius:2px 22px 2px 22px}
+html[data-skin="transmissao"] .notice-in{border-radius:2px 10px 2px 10px}
+@media (max-width:640px){
+  html[data-layout="dock"] .header-inner{padding:9px 12px;gap:8px}
+  html[data-layout="dock"] .icon-btn .small{display:none}
+  html[data-layout="dock"] .brand span{font-size:16px}
+  html[data-layout="dock"] .area-switch button{padding:8px 6px;font-size:11.5px;letter-spacing:.02em}
+  html[data-layout="dock"][data-tabs] .tab{min-width:62px;padding:7px 8px 6px}
+  html[data-layout="dock"] #tabs:not(.hidden){bottom:calc(8px + env(safe-area-inset-bottom));border-radius:18px 5px 18px 5px}
+}
+@media print{html[data-layout="dock"] #tabs{display:none!important}}
 </style>
 </head>
 <body>
@@ -517,7 +565,7 @@ function defaultState() {
     version: SCHEMA_VERSION,
     meta: {
       createdAt: new Date().toISOString(), lastBackup: null,
-      theme: 'dark', skin: 'campo', accent: '', autoBackup: true, coachName: '', currency: '€', welcomeDismissed: false,
+      theme: 'dark', skin: 'transmissao', look: 'v2', accent: '', autoBackup: true, coachName: '', currency: '€', welcomeDismissed: false,
       nav: { area: 'home', tab: { home: 'painel', ml: 'inicio', dd: 'gastos' } }
     },
     ml: {                                          // Master League
@@ -585,7 +633,10 @@ function loadState() {
       try { localStorage.setItem(PREV_KEY, raw); } catch (e) {}
       d = migrate(d);
     }
-    return fillDefaults(d, defaultState());
+    const oldLook = !d.meta || d.meta.look !== 'v2';       // 1ª abertura com o visual novo: quem ainda usava o visual original passa para a Transmissão
+    d = fillDefaults(d, defaultState());
+    if (oldLook) { if (d.meta.skin === 'campo') d.meta.skin = 'transmissao'; d.meta.look = 'v2'; }
+    return d;
   } catch (e) {
     storageStatus.corrupt = true;                           // guarda o texto original antes de qualquer sobrescrita
     try { localStorage.setItem(STORAGE_KEY + ':corrompido', raw); } catch (e2) {}
@@ -1012,7 +1063,10 @@ function themeSeg(redraw) {
    --------------------------------------------------------------------- */
 const P = (bg, header, surface, surface2, border, text, muted, accent, ink) => ({ bg, header, surface, surface2, border, text, muted, accent, ink });
 const SKINS = {
-  campo: { name: 'Campo', desc: 'Verde de gramado com listras — o visual original.', base: true, radius: 14, radiusSm: 10, tabs: 'underline',
+  transmissao: { name: 'Transmissão', desc: 'Placar de TV esportiva: azul-noite com verde-limão (Master League) e laranja (Dia a dia), cantos em lâmina e letras inclinadas — o visual padrão.', radius: 4, radiusSm: 3, tabs: 'underline', headTT: 'uppercase', headLS: '.04em', fontHead: 'Bahnschrift,"Arial Narrow","Segoe UI",system-ui,sans-serif', shadow: { dark: '0 10px 30px rgba(0,0,12,.55)', light: '0 6px 20px rgba(20,35,110,.14)' },
+    dark: { ml: P('#060a18', '#0a1130', '#0f1840', '#16225a', '#2a3a82', '#f1f5ff', '#93a3d8', '#c8ff2e', '#142000'), dd: P('#070a18', '#0c1030', '#111842', '#18205a', '#2d3a84', '#f3f5ff', '#98a4d6', '#ff8a3d', '#2b1000') },
+    light: { ml: P('#e9edf8', '#ffffff', '#ffffff', '#eef1fb', '#c2cbea', '#0b1230', '#56619a', '#2441e0', '#ffffff'), dd: P('#eef0f8', '#ffffff', '#ffffff', '#f1f2fb', '#c6cbe8', '#0b1230', '#5a6299', '#c24a0a', '#ffffff') } },
+  campo: { name: 'Campo', desc: 'Verde de gramado com listras: o visual original.', base: true, radius: 14, radiusSm: 10, tabs: 'underline',
     dark: { ml: P('#08130d', '#0c1e14', '#10241a', '#163023', '#25483a', '#e6f4ea', '#8db3a0', '#3ddc84', '#05210f'), dd: P('#0e1014', '#14171d', '#171b22', '#1e232c', '#2a303b', '#e9ecf2', '#98a0b0', '#7b93ff', '#0b1030') },
     light: { ml: P('#eef5ef', '#ffffff', '#ffffff', '#f1f7f2', '#cfe2d4', '#112a1b', '#5b7a67', '#12803f', '#ffffff'), dd: P('#f3f4f7', '#ffffff', '#ffffff', '#f1f2f6', '#dcdfe6', '#1a1e27', '#647084', '#4a63e0', '#ffffff') } },
   neon: { name: 'Neon Arena', desc: 'Noite roxa com néon ciano e rosa, brilho e abas em pílula.', radius: 16, radiusSm: 12, tabs: 'pills', glow: true, headerGrad: true, bodyGlow: true,
@@ -1062,7 +1116,7 @@ const SKINS = {
     dark: { ml: P('#07141f', '#0a1c2c', '#0d2538', '#123349', '#1f5a85', '#eaf6ff', '#8bb8d6', '#6cc4ff', '#04243a'), dd: P('#081522', '#0c1d30', '#102740', '#17365a', '#27598f', '#ebf5ff', '#94b9e0', '#bfe3ff', '#06263d') },
     light: { ml: P('#eef8ff', '#ffffff', '#ffffff', '#def0fd', '#bfe0f7', '#0b2a40', '#4a7690', '#0b72b0', '#ffffff'), dd: P('#eef5ff', '#ffffff', '#ffffff', '#e0ecfd', '#bdd2f3', '#0c2547', '#4e6c9a', '#1565c0', '#ffffff') } }
 };
-const SKIN_ORDER = ['campo', 'neon', 'classico', 'oceano', 'pordosol', 'mono', 'estadio', 'pastel', 'arcade', 'brasil', 'vinho', 'gelo', 'carvao', 'rubro', 'celeste'];
+const SKIN_ORDER = ['transmissao', 'campo', 'neon', 'classico', 'oceano', 'pordosol', 'mono', 'estadio', 'pastel', 'arcade', 'brasil', 'vinho', 'gelo', 'carvao', 'rubro', 'celeste'];
 const hexRgb = hex => { const n = parseInt(hex.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
 const lumOf = hex => { const [r, g, b] = hexRgb(hex).map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 const contrast = (a, b) => { const x = lumOf(a), y = lumOf(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
@@ -1070,7 +1124,7 @@ const inkFor = hex => contrast(hex, '#0b0b0b') >= contrast(hex, '#ffffff') ? '#0
 const validHex = s => /^#[0-9a-fA-F]{6}$/.test(s || '');
 
 function skinCss(id, custom) {
-  const s = SKINS[id] || SKINS.campo;
+  const s = SKINS[id] || SKINS.transmissao;
   let css = '';
   if (!s.base) {
     css += `:root{--radius:${s.radius}px;--radius-sm:${s.radiusSm}px;${s.font ? `--font:${s.font};` : ''}--font-head:${s.fontHead || 'var(--font)'};--head-tt:${s.headTT || 'none'};--head-ls:${s.headLS || '0'}}\n`;
@@ -1085,7 +1139,7 @@ function skinCss(id, custom) {
   return css;
 }
 function applySkin() {
-  const id = SKINS[state.meta.skin] ? state.meta.skin : 'campo';
+  const id = SKINS[state.meta.skin] ? state.meta.skin : 'transmissao';
   const root = document.documentElement;
   root.dataset.skin = id;
   root.dataset.tabs = SKINS[id].tabs || 'underline';
@@ -1116,7 +1170,7 @@ function openAppearanceModal() {
   const box = h('div', { class: 'stack' });
   const colorIn = h('input', { type: 'color', 'aria-label': 'Cor de destaque personalizada' });
   const draw = () => {
-    const cur = SKINS[state.meta.skin] ? state.meta.skin : 'campo';
+    const cur = SKINS[state.meta.skin] ? state.meta.skin : 'transmissao';
     colorIn.value = validHex(state.meta.accent) ? state.meta.accent : SKINS[cur][isLight() ? 'light' : 'dark'][styleArea()].accent;
     box.replaceChildren(
       h('div', { class: 'row' }, h('span', { class: 'muted' }, 'Modo:'), themeSeg(draw),
@@ -1183,7 +1237,7 @@ function renderTabs() {
   nav.className = 'tabs';
   nav.replaceChildren(...AREAS[area].tabs.map(t => h('button', {
     type: 'button', class: 'tab' + (t.id === cur.id ? ' active' : ''), onclick: () => go(area, t.id)
-  }, t.icon + ' ' + t.label, t.render ? null : h('span', { class: 'soon' }, 'F' + t.phase))));
+  }, h('span', { class: 'tab-i', 'aria-hidden': 'true' }, t.icon), h('span', { class: 'tab-t' }, t.label), t.render ? null : h('span', { class: 'soon' }, 'F' + t.phase))));
 }
 
 function renderView() {
