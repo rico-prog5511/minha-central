@@ -1,7 +1,7 @@
 /* Service worker: guarda o app no aparelho para funcionar offline.
-   Estratégia: responde do cache e atualiza em segundo plano (a versão nova aparece na abertura seguinte).
+   Estratégia: rede primeiro (a versão nova aparece logo na abertura) com cópia guardada para funcionar offline.
    Cada app tem o seu próprio cache e só mexe nos arquivos DELE: os outros apps da mesma pasta não são afetados. */
-const CACHE = 'caderno-piadas-v1';
+const CACHE = 'caderno-piadas-v2';
 const PREFIX = 'caderno-piadas-';
 const ASSETS = ['./piadas.html', './manifest-piadas.webmanifest', './icon-piadas-192.png', './icon-piadas-512.png'];
 const MINE = new Set(ASSETS.map(a => new URL(a, self.location).pathname));
@@ -15,8 +15,10 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
   if (url.origin !== location.origin || !MINE.has(url.pathname)) return;     // deixa passar tudo que não é deste app
-  e.respondWith(caches.open(CACHE).then(cache => cache.match(e.request, { ignoreSearch: true }).then(hit => {
-    const net = fetch(e.request).then(r => { if (r && r.ok) cache.put(e.request, r.clone()); return r; }).catch(() => hit);
-    return hit || net;
-  })));
+  // Rede primeiro (sempre a versão mais nova, ignorando o cache do navegador); se estiver offline ou lento (4 s), usa a cópia guardada.
+  e.respondWith(caches.open(CACHE).then(cache => {
+    const net = fetch(e.request, { cache: 'no-cache' }).then(r => { if (!r || !r.ok) throw new Error('resposta ruim'); cache.put(e.request, r.clone()); return r; });
+    const slow = new Promise((_, rej) => setTimeout(rej, 4000));
+    return Promise.race([net, slow]).catch(() => cache.match(e.request, { ignoreSearch: true }).then(hit => hit || net));
+  }));
 });
